@@ -45,7 +45,7 @@ namespace SvgQrCodeGenerator
                 var stringFormat = new string('0', config.GenerationPartLength);
                 Console.WriteLine($"Маска формата номеров: {stringFormat}");
 
-                for (var value = config.StartNumber; value < config.LastNumber; value++)
+                for (var value = config.StartNumber; value < config.LastNumber; value += config.StepNumber)
                 {
                     var formatedValue = value.ToString(stringFormat);
                     var qrValue = $"{config.FixedPart}{formatedValue}";
@@ -107,6 +107,7 @@ namespace SvgQrCodeGenerator
         public int GenerationPartLength;
         public int StartNumber;
         public int LastNumber;
+        public int StepNumber;
         public int QrSideSize;
         public int SvgPixelBoxSize;
 
@@ -116,6 +117,7 @@ namespace SvgQrCodeGenerator
             SetGenerationPartLength();
             SetStartNumber();
             SetLastNumber();
+            SetStepNumber();
             SetQrSideSize();
             SetSvgPixelBoxSize();
 
@@ -156,6 +158,17 @@ namespace SvgQrCodeGenerator
             Console.Write("Введите конечное число: ");
             LastNumber = 0;
             while (!int.TryParse(Console.ReadLine(), out LastNumber) || LastNumber < 0 || LastNumber <= StartNumber)
+            {
+                ShowNumberErrorMessage();
+            }
+            return this;
+        }
+
+        public Config SetStepNumber()
+        {
+            Console.Write("Введите шаг: ");
+            StepNumber = 1;
+            while (!int.TryParse(Console.ReadLine(), out StepNumber) || StepNumber < 0 || StepNumber >= LastNumber)
             {
                 ShowNumberErrorMessage();
             }
